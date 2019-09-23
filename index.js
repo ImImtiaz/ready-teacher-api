@@ -76,8 +76,8 @@ app.get('/', (req,res)=>{
     res.send("Welcome to api");
 });
 
-app.get('/api/getAllUsers', (req,res) => {
-    let sql = "SELECT * FROM personal_info";
+app.get('/api/getAllTeacherDetails', (req,res) => {
+    let sql = "SELECT * FROM teacher_details";
     conn.query(sql, (err, result) => {
         if(err)
             return res.send(err);
@@ -90,8 +90,8 @@ app.get('/api/getAllUsers', (req,res) => {
 });
 
 //show single user
-app.get('/api/users/:id',(req, res) => {
-  let sql = "SELECT * FROM personal_info WHERE user_id="+req.params.id;
+app.get('/api/getTeacherDetails/:id',(req, res) => {
+  let sql = "SELECT * FROM teacher_details WHERE user_id="+req.params.id;
   let query = conn.query(sql, (err, result) => {
     if(err) throw err;
     else{
@@ -102,21 +102,21 @@ app.get('/api/users/:id',(req, res) => {
   });
 });
 
-//add new user
- app.post('/api/users',(req, res) => {
-   //let data = {user_id: req.body.user_id, first_name: req.body.first_name, last_name: req.body.last_name, gender: req.body.gender, email: req.body.email, contact: req.body.contact, mobile: req.body.mobile};
-     let data = [
-        {
-            "user_id": 1,
-            "first_name": "first1",
-            "last_name": "last2",
-            "gender": "male",
-            "email": "email@gmail.com",
-            "contact": 67890,
-            "mobile": 12345
-        }
-    ];
-   let sql = "INSERT INTO personal_info SET ?";
+//add new teacher details
+ app.post('/api/postTeacherDetails',(req, res) => {
+        let data = {user_id: req.body.user_id, first_name: req.body.first_name, last_name: req.body.last_name, dob: req.body.dob, email: req.body.email, office_contact: req.body.office_contact, mobile: req.body.mobile};
+    //  let data = [
+    //     {
+    //         "user_id": 1,
+    //         "first_name": "first1",
+    //         "last_name": "last2",
+    //         "gender": "male",
+    //         "email": "email@gmail.com",
+    //         "contact": 67890,
+    //         "mobile": 12345
+    //     }
+    // ];
+   let sql = "INSERT INTO teacher_details SET ?";
    let query = conn.query(sql, data,(err, result) => {
      if(err) throw err;
      res.send(JSON.stringify({"status": 200, "error": null, "response": result}));
