@@ -76,6 +76,7 @@ app.get('/', (req, res) => {
   res.send("Welcome to api");
 });
 
+//show all teacher details
 app.get('/api/getTeacherDetails', (req, res) => {
   let sql = "SELECT * FROM teacher_details";
   conn.query(sql, (err, result) => {
@@ -89,9 +90,9 @@ app.get('/api/getTeacherDetails', (req, res) => {
   });
 });
 
-//show single user
-app.get('/api/getTeacherDetails/:id', (req, res) => {
-  let sql = "SELECT * FROM teacher_details WHERE user_id=" + req.params.id;
+//show single teacher details by user ID
+app.get('/api/getTeacherDetailsByUserID/:userId', (req, res) => {
+  let sql = "SELECT * FROM teacher_details WHERE user_id=" + req.params.userId;
   let query = conn.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -110,16 +111,8 @@ app.post('/api/postTeacherDetails', (req, res) => {
     last_name: req.body.last_name,
     dob: req.body.dob,
     email: req.body.email,
-    office_contact: req.body.office_contact,
     mobile: req.body.mobile,
-    street: req.body.street,
-    suburb: req.body.suburb,
-    state: req.body.state,
-    post_code: req.body.post_code,
-    work_eligibility: req.body.work_eligibility,
-    other_visa_holder_comment: req.body.other_visa_holder_comment,
-    experience_year: req.body.experience_year,
-    experience_month: req.body.experience_month
+    city: req.body.city
   };
 
   let sqlTeacherDetails = "INSERT INTO teacher_details SET ?";
@@ -127,33 +120,6 @@ app.post('/api/postTeacherDetails', (req, res) => {
     if (err) throw err;
     res.send(JSON.stringify({"status": 200, "error": null, "response": result}));
     //console.log(result.insertId);
-    let teacherAvailability = {
-      teacher_details_id: result.insertId,
-      work_immediately: req.body.availibility.work_immediately,
-      start_work: req.body.availibility.start_work
-    }
-
-    let sqlTeacherAvailability = "INSERT INTO teacher_availability SET ?";
-    let query2 = conn.query(sqlTeacherAvailability, teacherAvailability, (err, result) => {
-      if (err) throw err;
-      //res.send(JSON.stringify({"status": 200, "error": null, "response": result}));
-
-      let teacherAvailabilityDays = req.body.availibility.availibility_days;
-      let formatedTeacherAvailabilityDays = teacherAvailabilityDays.map(
-        teacherAvailabilityDay => [
-          result.insertId,
-          teacherAvailabilityDay.day,
-          teacherAvailabilityDay.start_time,
-          teacherAvailabilityDay.end_time
-        ]);
-
-      let sqlTeacherAvailabilityDay = "INSERT INTO teacher_availability_day (teacher_availability_id, day, start_time, end_time) VALUES ?";
-      let query3 = conn.query(sqlTeacherAvailabilityDay, [formatedTeacherAvailabilityDays], (err, result) => {
-        if (err) throw err;
-        //res.send(JSON.stringify({ "status": 200, "error": null, "response": result }));
-      });
-    });
-
   });
 });
 
@@ -162,8 +128,8 @@ app.post('/api/postTeacherDetails', (req, res) => {
 app.post('/api/postTeacherQualification', (req, res) => {
   let teacherQualification = {
     teacher_details_id: req.body.teacher_details_id,
-    highest_qualification_id: req.body.highest_qualification_id,
-    specialization_id: req.body.specialization_id
+    experience_year: req.body.experience_year,
+    experience_month: req.body.experience_month
   };
 
   let sqlTeacherQualification = "INSERT INTO teacher_qualification SET ?";
@@ -179,9 +145,9 @@ app.post('/api/postTeacherQualification', (req, res) => {
         teacher_qualification_id: result.insertId,
         qulification_id: qualification.qulification_id,
         specialization_id: qualification.specialization_id,
-        course_completion_date: qualification.course_completion_date,
-        institute_name: qualification.institute_name,
-        institute_address: qualification.institute_address
+        major: qualification.major,
+        minor: qualification.minor,
+        course_completion_date: qualification.course_completion_date
       }
 
       let sqlTeacherQualiSpecialization = "INSERT INTO teacher_qualification_specialization SET ?";
@@ -190,14 +156,14 @@ app.post('/api/postTeacherQualification', (req, res) => {
         //res.send(JSON.stringify({"status": 200, "error": null, "response": result}));
 
         //let teacherAvailabilityDays = req.body.availibility.availibility_days;
-        let teacherQualiSubjects = qualification.subjects.map(
-          subject => [
+        let teacherQualiUnits = qualification.units.map(
+          unit => [
             result.insertId,
-            subject.subject_id
+            unit.unit
           ]);
 
-        let sqlTeacherQualiSubjects = "INSERT INTO teacher_qualification_subject (teacher_qualification_specialization_id, subject_id) VALUES ?";
-        let query3 = conn.query(sqlTeacherQualiSubjects, [teacherQualiSubjects], (err, result) => {
+        let sqlTeacherQualiUnits = "INSERT INTO teacher_qualification_unit (teacher_qualification_specialization_id, unit) VALUES ?";
+        let query3 = conn.query(sqlTeacherQualiUnits, [teacherQualiUnits], (err, result) => {
           if (err) throw err;
           //res.send(JSON.stringify({ "status": 200, "error": null, "response": result }));
         });
@@ -221,6 +187,20 @@ app.get('/api/getQualifications', (req, res) => {
   });
 });
 
+//add new Qualification
+app.post('/api/postQualification',(req, res) => {
+  let data = {
+    name: req.body.name, 
+  };
+
+  let sql = "INSERT INTO qualification SET ?";
+  let query = conn.query(sql, data,(err, results) => {
+    if(err) throw err;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+});
+
+
 //get Qualification By QualificationID
 app.get('/api/getQualificationByID/:qualificationId', (req, res) => {
   let sql = "SELECT * FROM qualification WHERE id=" + req.params.qualificationId;
@@ -233,7 +213,6 @@ app.get('/api/getQualificationByID/:qualificationId', (req, res) => {
     }
   });
 });
-
 
 //get Specializations By QualificationID
 app.get('/api/getSpecializationsByQualificationID/:qualificationId', (req, res) => {
@@ -248,16 +227,37 @@ app.get('/api/getSpecializationsByQualificationID/:qualificationId', (req, res) 
   });
 });
 
+//add new Specialization
+app.post('/api/postSpecialization',(req, res) => {
+  let data = {
+    qualification_id: req.body.qualification_id,
+    name: req.body.name, 
+  };
 
-//get Subjects By SpecializationID
-app.get('/api/getSubjectsBySpecializationID/:specializationID', (req, res) => {
-  let sql = "SELECT * FROM subject WHERE 	specialization_id=" + req.params.specializationID;
-  let query = conn.query(sql, (err, result) => {
+  let sql = "INSERT INTO  specialization SET ?";
+  let query = conn.query(sql, data,(err, results) => {
+    if(err) throw err;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+});
+
+//get Units By TeacherQualificationId
+app.get('/api/getUnitsBySpecializationID/:teacherQualificationId', (req, res) => {
+  let sqlTeacherQualificationSpecialization = "SELECT id FROM teacher_qualification_specialization WHERE 	teacher_qualification_id=" + req.params.teacherQualificationId;
+  let query = conn.query(sqlTeacherQualificationSpecialization, (err, result) => {
     if (err) throw err;
     else {
-      return res.json({
-        data: result
-      })
+      let teacherQualificationSpecializationIds = result.map( function(el) { return el.id; });
+
+      let sqlTeacherQualificationUnit = "SELECT * FROM teacher_qualification_unit WHERE teacher_qualification_specialization_id IN (?)";
+      let query2 = conn.query(sqlTeacherQualificationUnit, [teacherQualificationSpecializationIds], (err, result) => {
+        if (err) throw err; 
+        else {
+          return res.json({
+            data: result
+          })
+        }
+      });
     }
   });
 });
