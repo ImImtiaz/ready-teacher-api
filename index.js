@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
@@ -77,18 +78,39 @@ app.get('/', (req, res) => {
 });
 
 //show all teacher details
-app.get('/api/getTeacherDetails', (req, res) => {
-  let sql = "SELECT * FROM teacher_details";
-  conn.query(sql, (err, result) => {
-    if (err)
-      return res.send(err);
-    else {
-      return res.json({
-        data: result
-      })
+//app.get('/api/getTeacherDetails', (req, res) => {
+//  let sql = "SELECT * FROM teacher_details";
+//  conn.query(sql, (err, result) => {
+//    if (err)
+//      return res.send(err);
+//    else {
+//      return res.json({
+//        data: result
+//      })
+//    }
+//  });
+//});
+
+app.get('/api/getTeacherDetails', verifyToken, (req, res) => {  
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if(err) {
+      res.sendStatus(403);
+    } else {
+      let sql = "SELECT * FROM teacher_details";
+      conn.query(sql, (err, result) => {
+        if (err)
+          return res.send(err);
+        else {
+          return res.json({
+            data: result
+          })
+        }
+      });
     }
   });
 });
+
+
 
 //show single teacher details by user ID
 app.get('/api/getTeacherDetailsByUserID/:userId', (req, res) => {
@@ -267,7 +289,45 @@ app.get('/api/getUnitsBySpecializationID/:teacherQualificationId', (req, res) =>
 
 
 
+app.post('/api/login', (req, res) => {
+  // Mock user
+  const user = {
+    id: 1, 
+    username: 'Asif',
+    email: 'asif@gmail.com'
+  }
 
+  jwt.sign({user}, 'secretkey', { expiresIn: '1h' }, (err, token) => {
+    res.json({
+      token
+    });
+  });
+});
+
+
+// FORMAT OF TOKEN
+// Authorization: Bearer <access_token>
+
+// Verify Token
+function verifyToken(req, res, next) {
+  // Get auth header value
+  const bearerHeader = req.headers['authorization'];
+  // Check if bearer is undefined
+  if(typeof bearerHeader !== 'undefined') {
+    // Split at the space
+    const bearer = bearerHeader.split(' ');
+    // Get token from array
+    const bearerToken = bearer[1];
+    // Set the token
+    req.token = bearerToken;
+    // Next middleware
+    next();
+  } else {
+    // Forbidden
+    res.sendStatus(403);
+  }
+
+}
 
 
 
