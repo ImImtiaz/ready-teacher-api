@@ -192,7 +192,7 @@ app.post('/api/postTeacherQualification', verifyToken, (req, res) => {
     } else {
       let teacherQualification = {
         teacher_details_id: req.body.teacher_details_id,
-        techer_qualification_cv_id: req.body.techer_qualification_cv_id,
+        teacher_qualification_cv_id	: req.body.techer_qualification_cv_id,
         experience_year: req.body.experience_year,
         experience_month: req.body.experience_month
       };
@@ -457,6 +457,27 @@ app.get('/api/getUnitsBySpecializationID/:teacherQualificationId', verifyToken, 
     }
   });
 });
+
+
+//get Qualification By QualificationID
+app.get('/api/getSuggesteqUnits/:qualificationId', verifyToken, (req, res) => {
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      let sql = "SELECT tqUn.unit FROM teacher_qualification tq INNER JOIN teacher_qualification_specialization tqSp ON tqSp.teacher_qualification_id = tq.id INNER JOIN teacher_qualification_unit tqUn ON tqUn.teacher_qualification_specialization_id = tqSp.id WHERE tq.id=" + req.params.qualificationId;
+      let query = conn.query(sql, (err, result) => {
+        if (err) throw err;
+        else {
+          return res.json({
+            data: result
+          })
+        }
+      });
+    }
+  });
+});
+
 
 //Registrater new user
 app.post('/api/registration', (req, res) => {
