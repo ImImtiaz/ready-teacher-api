@@ -184,77 +184,6 @@ app.post('/api/postTeacherDetails', verifyToken, (req, res) => {
 });
 
 
-
-
-/*
-//get Qualifications By UserID
-app.get('/api/getQualificationsByUserID/:userId', verifyToken, (req, res) => {
-  let returnResult = [];
-  jwt.verify(req.token, 'secretkey', (err, authData) => {
-    if (err) {
-      res.sendStatus(403);
-    } else {
-      let sql = "SELECT * FROM teacher_qualification WHERE teacher_details_id=" + req.params.userId;
-      let query = conn.query(sql, {}, (err, resultQualifications) => {
-        if (err) throw err;
-        else {
-          for (let qualification of resultQualifications) {
-              let qualificationObj = {
-                teacher_details_id : qualification.teacher_details_id,
-                experience_year: qualification.experience_year,
-                experience_month: qualification.experience_month,
-            };
-
-
-             let sql = "SELECT * FROM teacher_qualification_specialization WHERE teacher_qualification_id=" + qualification.id;
-             let query = conn.query(sql, (err, resultSpecializations) => {
-             let specializationArray = [];
-              for (let specialization of resultSpecializations) {                
-                  let specializationObj = {
-                    major: specialization.major,
-                    minor: specialization.minor,
-                    course_completion_date: specialization.course_completion_date
-                  };
-
-
-                  specializationArray.push(specializationObj);
-              }
-              qualificationObj.qualification = specializationArray;
-              
-             });
-             
-             returnResult.push(qualificationObj);
-             
-          }
-          
-
-          // let sql = "SELECT * FROM teacher_details WHERE teacher_details_id=" + result[0].user_id;
-          // let query = conn.query(sql, (err, result) => {
-          //   if (err) throw err;
-          //   teacherQualification.experience_year = result.experience_year;
-          //   teacherQualification.experience_month = result.experience_month;
-
-            
-
-          // });
-          // return res.json({
-          //   data: returnResult
-          // });
-          return res.json({
-            data: returnResult
-          });
-        }
-        
-              
-      });
-    }
-  });
-});
-
-*/
-
-
-
 //add new Teacher Qualification
 app.post('/api/postTeacherQualification', verifyToken, (req, res) => {
   jwt.verify(req.token, 'secretkey', (err, authData) => {
@@ -335,6 +264,65 @@ app.get('/api/getTeacherQualificationCVByID/:cvId', verifyToken, (req, res) => {
       res.sendStatus(403);
     } else {
       let sql = "SELECT * FROM  teacher_qualification_cv WHERE id=" + req.params.cvId;
+      let query = conn.query(sql, (err, result) => {
+        if (err) throw err;
+        else {
+          return res.json({
+            data: result
+          })
+        }
+      });
+    }
+  });
+});
+
+
+//get Teacher Qualifications By UserID
+app.get('/api/getTeacherQualificationsByUserID/:userId', verifyToken, (req, res) => {
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      let sql = "SELECT * FROM teacher_qualification tq INNER JOIN teacher_qualification_cv tqCV on tqCV.id = tq.teacher_qualification_cv_id WHERE teacher_details_id=" + req.params.userId;
+      let query = conn.query(sql, (err, result) => {
+        if (err) throw err;
+        else {
+          return res.json({
+            data: result
+          })
+        }
+      });
+    }
+  });
+});
+
+
+//get Teacher Specializations by QualificationID
+app.get('/api/getTeacherSpecializationsByQualificationID/:qualificationID', verifyToken, (req, res) => {
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      let sql = "SELECT tqSp.major, tqSp.minor, tqSp.course_completion_date, q.name as qualification_name, s.name as specialization_name FROM teacher_qualification_specialization tqSp INNER JOIN qualification q on q.id = tqSp.qulification_id INNER JOIN specialization s on s.id = tqSp.specialization_id WHERE teacher_qualification_id=" + req.params.qualificationID;
+      let query = conn.query(sql, (err, result) => {
+        if (err) throw err;
+        else {
+          return res.json({
+            data: result
+          })
+        }
+      });
+    }
+  });
+});
+
+//get Teacher Units By SpecializationID
+app.get('/api/getTeacherUnitsBySpecializationID/:specializationID', verifyToken, (req, res) => {
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      let sql = "SELECT * FROM teacher_qualification_unit WHERE teacher_qualification_specialization_id=" + req.params.specializationID;
       let query = conn.query(sql, (err, result) => {
         if (err) throw err;
         else {
@@ -509,7 +497,7 @@ app.post('/api/login', (req, res) => {
     if (err) throw err;
     else {
       if (results.length == 1) {
-        jwt.sign({ user,results }, 'secretkey', { expiresIn: '1h' }, (err, token) => {
+        jwt.sign({ user,results }, 'secretkey', { expiresIn: '100h' }, (err, token) => {
           res.json({
             token,
             userId: results[0].id
