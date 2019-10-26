@@ -183,6 +183,78 @@ app.post('/api/postTeacherDetails', verifyToken, (req, res) => {
   });
 });
 
+
+
+
+
+// //get Qualifications By UserID
+// app.get('/api/getQualificationsByUserID/:userId', verifyToken, (req, res) => {
+//   let returnResult = [];
+//   jwt.verify(req.token, 'secretkey', (err, authData) => {
+//     if (err) {
+//       res.sendStatus(403);
+//     } else {
+//       let sql = "SELECT * FROM teacher_qualification WHERE teacher_details_id=" + req.params.userId;
+//       let query = conn.query(sql, {}, (err, resultQualifications) => {
+//         if (err) throw err;
+//         else {
+//           for (let qualification of resultQualifications) {
+//               let qualificationObj = {
+//                 teacher_details_id : qualification.teacher_details_id,
+//                 experience_year: qualification.experience_year,
+//                 experience_month: qualification.experience_month,
+//             };
+
+
+//              let sql = "SELECT * FROM teacher_qualification_specialization WHERE teacher_qualification_id=" + qualification.id;
+//              let query = conn.query(sql, (err, resultSpecializations) => {
+//              let specializationArray = [];
+//               for (let specialization of resultSpecializations) {                
+//                   let specializationObj = {
+//                     major: specialization.major,
+//                     minor: specialization.minor,
+//                     course_completion_date: specialization.course_completion_date
+//                   };
+
+
+//                   specializationArray.push(specializationObj);
+//               }
+//               qualificationObj.qualification = specializationArray;
+              
+//              });
+             
+//              returnResult.push(qualificationObj);
+             
+//           }
+          
+
+//           // let sql = "SELECT * FROM teacher_details WHERE teacher_details_id=" + result[0].user_id;
+//           // let query = conn.query(sql, (err, result) => {
+//           //   if (err) throw err;
+//           //   teacherQualification.experience_year = result.experience_year;
+//           //   teacherQualification.experience_month = result.experience_month;
+
+            
+
+//           // });
+//           // return res.json({
+//           //   data: returnResult
+//           // });
+//           return res.json({
+//             data: returnResult
+//           });
+//         }
+        
+              
+      });
+    }
+  });
+});
+
+
+
+
+
 //add new Teacher Qualification
 app.post('/api/postTeacherQualification', verifyToken, (req, res) => {
   jwt.verify(req.token, 'secretkey', (err, authData) => {
@@ -191,6 +263,7 @@ app.post('/api/postTeacherQualification', verifyToken, (req, res) => {
     } else {
       let teacherQualification = {
         teacher_details_id: req.body.teacher_details_id,
+        techer_qualification_cv_id: req.body.techer_qualification_cv_id,
         experience_year: req.body.experience_year,
         experience_month: req.body.experience_month
       };
