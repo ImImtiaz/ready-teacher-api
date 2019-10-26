@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 26, 2019 at 07:42 AM
+-- Generation Time: Oct 26, 2019 at 12:01 PM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -105,7 +105,7 @@ DROP TABLE IF EXISTS `teacher_qualification`;
 CREATE TABLE IF NOT EXISTS `teacher_qualification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `teacher_details_id` int(11) NOT NULL,
-  `techer_qualification_cv_id` int(11) NOT NULL,
+  `teacher_qualification_cv_id` int(11) NOT NULL,
   `experience_year` int(11) NOT NULL,
   `experience_month` int(11) NOT NULL,
   PRIMARY KEY (`id`)
@@ -115,9 +115,9 @@ CREATE TABLE IF NOT EXISTS `teacher_qualification` (
 -- Dumping data for table `teacher_qualification`
 --
 
-INSERT INTO `teacher_qualification` (`id`, `teacher_details_id`, `techer_qualification_cv_id`, `experience_year`, `experience_month`) VALUES
+INSERT INTO `teacher_qualification` (`id`, `teacher_details_id`, `teacher_qualification_cv_id`, `experience_year`, `experience_month`) VALUES
 (1, 1, 4, 3, 5),
-(2, 1, 0, 3, 5),
+(2, 1, 3, 3, 5),
 (3, 1, 0, 3, 5),
 (4, 1, 0, 3, 5),
 (5, 1, 0, 3, 5),
