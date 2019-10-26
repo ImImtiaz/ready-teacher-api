@@ -4,10 +4,36 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const mysql = require('mysql');
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function(req, file, cb){
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb){
+    cb(null, new Date().getTime() + file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb)=> {
+  if(file.mimetype == 'application/pdf'){
+    cb(null, true);
+  }else{
+  cb(null, false);
+}
+}
+
+const upload = multer({
+  storage: storage, 
+  limits:{
+    fileSize: 1024 * 1024 * 8
+  },
+    fileFilter: fileFilter
+});
 
 // parse application/json
 app.use(bodyParser.json());
 app.use(cors());
+app.use('/uploads', express.static('uploads'));
 
 //create database connection
 const conn = mysql.createConnection({
@@ -212,6 +238,42 @@ app.post('/api/postTeacherQualification', verifyToken, (req, res) => {
   });
 });
 
+//add new Teacher Qualification
+app.post('/api/postTeacherCV', verifyToken, upload.single('teacherCV'), (req, res) => {
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    console.log(req.file);
+    let teacherCVDetails = {
+      file_name: req.file.originalname, 
+      file_path: req.file.path
+    };
+
+   let sqlTeacherQualificationCV = "INSERT INTO teacher_qualification_cv SET ?";
+  let query = conn.query(sqlTeacherQualificationCV, teacherCVDetails,(err, results) => {
+    if(err) throw err;
+    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
+  });
+  });
+});
+
+//show single teacher details by user ID
+app.get('/api/getTeacherQualificationCVByID/:cvId', verifyToken, (req, res) => {
+  jwt.verify(req.token, 'secretkey', (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      let sql = "SELECT * FROM  teacher_qualification_cv WHERE id=" + req.params.cvId;
+      let query = conn.query(sql, (err, result) => {
+        if (err) throw err;
+        else {
+          return res.json({
+            data: result
+          })
+        }
+      });
+    }
+  });
+});
+
 //get all Qualifications
 app.get('/api/getQualifications', verifyToken, (req, res) => {
   jwt.verify(req.token, 'secretkey', (err, authData) => {
@@ -374,9 +436,10 @@ app.post('/api/login', (req, res) => {
     if (err) throw err;
     else {
       if (results.length == 1) {
-        jwt.sign({ user }, 'secretkey', { expiresIn: '1h' }, (err, token) => {
+        jwt.sign({ user,results }, 'secretkey', { expiresIn: '1h' }, (err, token) => {
           res.json({
-            token
+            token,
+            userId: results[0].id
           });
         });
       }
