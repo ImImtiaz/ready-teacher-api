@@ -224,10 +224,11 @@ app.post('/api/postTeacherQualification', verifyToken, (req, res) => {
             let teacherQualiUnits = qualification.units.map(
               unit => [
                 result.insertId,
+                unit.code,
                 unit.unit
               ]);
 
-            let sqlTeacherQualiUnits = "INSERT INTO teacher_qualification_unit (teacher_qualification_specialization_id, unit) VALUES ?";
+            let sqlTeacherQualiUnits = "INSERT INTO teacher_qualification_unit (teacher_qualification_specialization_id, code, unit) VALUES ?";
             let query3 = conn.query(sqlTeacherQualiUnits, [teacherQualiUnits], (err, result) => {
               if (err) throw err;
               //res.send(JSON.stringify({ "status": 200, "error": null, "response": result }));
@@ -465,7 +466,7 @@ app.get('/api/getSuggesteqUnits/:qualificationId', verifyToken, (req, res) => {
     if (err) {
       res.sendStatus(403);
     } else {
-      let sql = "SELECT tqUn.unit FROM teacher_qualification tq INNER JOIN teacher_qualification_specialization tqSp ON tqSp.teacher_qualification_id = tq.id INNER JOIN teacher_qualification_unit tqUn ON tqUn.teacher_qualification_specialization_id = tqSp.id WHERE tq.id=" + req.params.qualificationId;
+      let sql = "SELECT tqUn.code, tqUn.unit FROM teacher_qualification tq INNER JOIN teacher_qualification_specialization tqSp ON tqSp.teacher_qualification_id = tq.id INNER JOIN teacher_qualification_unit tqUn ON tqUn.teacher_qualification_specialization_id = tqSp.id WHERE tq.id=" + req.params.qualificationId;
       let query = conn.query(sql, (err, result) => {
         if (err) throw err;
         else {
