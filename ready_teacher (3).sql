@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 27, 2019 at 05:25 AM
+-- Generation Time: Oct 27, 2019 at 07:17 AM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -93,9 +93,7 @@ CREATE TABLE IF NOT EXISTS `teacher_details` (
 
 INSERT INTO `teacher_details` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `email`, `mobile`, `city`) VALUES
 (1, 1, 'Upal', 'Roy', '1992-09-23', 'upal.roy@gmail.com', '0989889889', 'Melbourne'),
-(2, 2, 'Upal', 'Roy', '1992-09-23', 'upal.roy@gmail.com', '0989889889', 'Melbourne'),
-(5, 1, '', '', NULL, '', '', ''),
-(6, 1, '', '', NULL, '', '', '');
+(2, 2, 'Upal', 'Roy', '1992-09-23', 'upal.roy@gmail.com', '0989889889', 'Melbourne');
 
 -- --------------------------------------------------------
 
@@ -275,6 +273,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `role` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
@@ -282,16 +281,16 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `email`, `password`) VALUES
-(1, 'upal@gmail.com', 'helloo'),
-(2, 'asif@gmail.com', 'hello'),
-(4, 'test@gmail.com', 'test'),
-(5, 'upal2@gmail.com', 'hello'),
-(6, 'upal23@gmail.com', 'hello'),
-(7, 'upal24@gmail.com', 'hello'),
-(8, 'upal27@gmail.com', '$2b$10$L4C8XU0rCXvplgbMK2n60eNly6t4LJ9CXJqv4IG3FZKBCchdYa8au'),
-(9, 'upal27@gmail.com', 'hello'),
-(10, 'he@gmail.com', 'ssssss');
+INSERT INTO `user` (`id`, `email`, `password`, `role`) VALUES
+(1, 'upal@gmail.com', 'helloo', 'admin'),
+(2, 'asif@gmail.com', 'helloo', 'user'),
+(4, 'test@gmail.com', 'test', 'user'),
+(5, 'upal2@gmail.com', 'hello', 'user'),
+(6, 'upal23@gmail.com', 'hello', 'user'),
+(7, 'upal24@gmail.com', 'hello', 'user'),
+(8, 'upal27@gmail.com', '$2b$10$L4C8XU0rCXvplgbMK2n60eNly6t4LJ9CXJqv4IG3FZKBCchdYa8au', 'user'),
+(9, 'upal27@gmail.com', 'hello', 'user'),
+(10, 'he@gmail.com', 'ssssss', 'user');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

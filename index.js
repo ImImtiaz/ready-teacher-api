@@ -522,7 +522,8 @@ app.post('/api/login', (req, res) => {
         jwt.sign({ user,results }, 'secretkey', { expiresIn: '100h' }, (err, token) => {
           res.json({
             token,
-            userId: results[0].id
+            userId: results[0].id,
+            role: results[0].role
           });
         });
       }
