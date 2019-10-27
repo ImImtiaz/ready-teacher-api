@@ -526,7 +526,7 @@ app.post('/api/login', (req, res) => {
         });
       }
       else {
-        res.send(JSON.stringify({ "status": 200, "error": "user deesn't exist", "response": results }));
+        res.send(JSON.stringify({ "status": 200, "error": "user doesn't exist", "response": results }));
       }
     }
   });
