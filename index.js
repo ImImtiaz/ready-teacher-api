@@ -466,7 +466,7 @@ app.get('/api/getSuggesteqUnits/:qualificationId', verifyToken, (req, res) => {
     if (err) {
       res.sendStatus(403);
     } else {
-      let sql = "SELECT tqUn.code, tqUn.unit FROM teacher_qualification tq INNER JOIN teacher_qualification_specialization tqSp ON tqSp.teacher_qualification_id = tq.id INNER JOIN teacher_qualification_unit tqUn ON tqUn.teacher_qualification_specialization_id = tqSp.id WHERE tq.id=" + req.params.qualificationId;
+      let sql = "SELECT tqUn.unit as name FROM teacher_qualification tq INNER JOIN teacher_qualification_specialization tqSp ON tqSp.teacher_qualification_id = tq.id INNER JOIN teacher_qualification_unit tqUn ON tqUn.teacher_qualification_specialization_id = tqSp.id WHERE tq.id =" + req.params.qualificationId +" AND tqUn.unit IN (SELECT tp.name as name FROM tranning_package tp)";
       let query = conn.query(sql, (err, result) => {
         if (err) throw err;
         else {
