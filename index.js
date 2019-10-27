@@ -167,7 +167,7 @@ app.post('/api/postTeacherDetails', verifyToken, (req, res) => {
         user_id: req.body.user_id,
         first_name: req.body.first_name,
         last_name: req.body.last_name,
-        dob: req.body.dob,
+        dob: req.body.dob || null,
         email: req.body.email,
         mobile: req.body.mobile,
         city: req.body.city
@@ -192,7 +192,7 @@ app.post('/api/postTeacherQualification', verifyToken, (req, res) => {
     } else {
       let teacherQualification = {
         teacher_details_id: req.body.teacher_details_id,
-        teacher_qualification_cv_id	: req.body.techer_qualification_cv_id,
+        teacher_qualification_cv_id	: req.body.teacher_qualification_cv_id,
         experience_year: req.body.experience_year,
         experience_month: req.body.experience_month
       };
@@ -303,7 +303,7 @@ app.get('/api/getTeacherSpecializationsByQualificationID/:qualificationID', veri
     if (err) {
       res.sendStatus(403);
     } else {
-      let sql = "SELECT tqSp.major, tqSp.minor, tqSp.course_completion_date, q.name as qualification_name, s.name as specialization_name FROM teacher_qualification_specialization tqSp INNER JOIN qualification q on q.id = tqSp.qulification_id INNER JOIN specialization s on s.id = tqSp.specialization_id WHERE teacher_qualification_id=" + req.params.qualificationID;
+      let sql = "SELECT tqSp.id, tqSp.major, tqSp.minor, tqSp.course_completion_date, q.name as qualification_name, s.name as specialization_name FROM teacher_qualification_specialization tqSp INNER JOIN qualification q on q.id = tqSp.qulification_id INNER JOIN specialization s on s.id = tqSp.specialization_id WHERE teacher_qualification_id=" + req.params.qualificationID;
       let query = conn.query(sql, (err, result) => {
         if (err) throw err;
         else {
