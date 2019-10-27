@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 26, 2019 at 12:01 PM
+-- Generation Time: Oct 27, 2019 at 05:25 AM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -79,13 +79,13 @@ CREATE TABLE IF NOT EXISTS `teacher_details` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `dob` date NOT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `dob` date DEFAULT NULL,
   `email` varchar(30) NOT NULL,
   `mobile` varchar(30) NOT NULL,
   `city` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `teacher_details`
@@ -93,7 +93,9 @@ CREATE TABLE IF NOT EXISTS `teacher_details` (
 
 INSERT INTO `teacher_details` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `email`, `mobile`, `city`) VALUES
 (1, 1, 'Upal', 'Roy', '1992-09-23', 'upal.roy@gmail.com', '0989889889', 'Melbourne'),
-(2, 2, 'Upal', 'Roy', '1992-09-23', 'upal.roy@gmail.com', '0989889889', 'Melbourne');
+(2, 2, 'Upal', 'Roy', '1992-09-23', 'upal.roy@gmail.com', '0989889889', 'Melbourne'),
+(5, 1, '', '', NULL, '', '', ''),
+(6, 1, '', '', NULL, '', '', '');
 
 -- --------------------------------------------------------
 
@@ -109,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `teacher_qualification` (
   `experience_year` int(11) NOT NULL,
   `experience_month` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `teacher_qualification`
@@ -125,7 +127,17 @@ INSERT INTO `teacher_qualification` (`id`, `teacher_details_id`, `teacher_qualif
 (7, 1, 0, 3, 5),
 (8, 1, 0, 3, 5),
 (9, 1, 0, 3, 5),
-(10, 1, 0, 3, 5);
+(10, 1, 0, 3, 5),
+(11, 1, 1, 3, 5),
+(12, 1, 1, 3, 5),
+(13, 1, 0, 2, 2),
+(14, 1, 0, 2, 2),
+(15, 1, 0, 2, 2),
+(16, 1, 0, 0, 0),
+(17, 1, 0, 0, 0),
+(18, 1, 0, 0, 0),
+(19, 1, 0, 0, 0),
+(20, 1, 1, 3, 5);
 
 -- --------------------------------------------------------
 
@@ -139,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `teacher_qualification_cv` (
   `file_name` varchar(255) NOT NULL,
   `file_path` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `teacher_qualification_cv`
@@ -147,7 +159,11 @@ CREATE TABLE IF NOT EXISTS `teacher_qualification_cv` (
 
 INSERT INTO `teacher_qualification_cv` (`id`, `file_name`, `file_path`) VALUES
 (4, 'teacherCV.pdf', 'uploads\\1572049499930teacherCV.pdf'),
-(3, 'teacherCV.pdf', 'uploads\\1572048937289teacherCV.pdf');
+(3, 'teacherCV.pdf', 'uploads\\1572048937289teacherCV.pdf'),
+(5, 'teacherCV.pdf', 'uploads\\1572148529919teacherCV.pdf'),
+(6, 'teacherCV.pdf', 'uploads\\1572148658506teacherCV.pdf'),
+(7, 'teacherCV.pdf', 'uploads\\1572148667705teacherCV.pdf'),
+(8, 'teacherCV.pdf', 'uploads\\1572148697362teacherCV.pdf');
 
 -- --------------------------------------------------------
 
@@ -165,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `teacher_qualification_specialization` (
   `minor` varchar(255) DEFAULT NULL,
   `course_completion_date` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `teacher_qualification_specialization`
@@ -182,7 +198,17 @@ INSERT INTO `teacher_qualification_specialization` (`id`, `teacher_qualification
 (8, 4, 1, 1, 'Tesol', '', '2000-05-22'),
 (9, 5, 1, 1, 'Tesol', '', '2001-09-23'),
 (10, 5, 1, 1, 'Tesol', '', '2000-05-22'),
-(11, 10, 1, 1, 'Tesol', NULL, '2001-09-23');
+(11, 10, 1, 1, 'Tesol', NULL, '2001-09-23'),
+(12, 11, 1, 1, 'Tesol', '', '2001-09-23'),
+(13, 11, 1, 1, 'Tesol', '', '2000-05-22'),
+(14, 12, 1, 1, 'Tesol', '', '2001-09-23'),
+(15, 12, 1, 1, 'Tesol', '', '2000-05-22'),
+(16, 13, 1, 1, 'Major', 'MInor', '2014-03-03'),
+(17, 14, 1, 1, 'Major', 'MInor', '2014-03-03'),
+(18, 15, 1, 1, 'Major', 'MInor', '2014-03-03'),
+(19, 19, 1, 1, 'major', '', '2014-09-08'),
+(20, 20, 1, 1, 'Tesol', '', '2001-09-23'),
+(21, 20, 1, 1, 'Tesol', '', '2000-05-22');
 
 -- --------------------------------------------------------
 
@@ -194,29 +220,49 @@ DROP TABLE IF EXISTS `teacher_qualification_unit`;
 CREATE TABLE IF NOT EXISTS `teacher_qualification_unit` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `teacher_qualification_specialization_id` int(11) NOT NULL,
+  `code` varchar(255) NOT NULL,
   `unit` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `teacher_qualification_unit`
 --
 
-INSERT INTO `teacher_qualification_unit` (`id`, `teacher_qualification_specialization_id`, `unit`) VALUES
-(1, 5, 'Structure of Language'),
-(2, 5, 'Concepts in Applied Linguistics'),
-(3, 6, 'Research Methods'),
-(4, 6, 'Teaching Languages in a Global Context'),
-(5, 7, 'Structure of Language'),
-(6, 7, 'Concepts in Applied Linguistics'),
-(7, 8, 'Research Methods'),
-(8, 8, 'Teaching Languages in a Global Context'),
-(9, 9, 'Structure of Language'),
-(10, 9, 'Concepts in Applied Linguistics'),
-(11, 10, 'Research Methods'),
-(12, 10, 'Teaching Languages in a Global Context'),
-(13, 11, 'Structure of Language'),
-(14, 11, 'Concepts in Applied Linguistics');
+INSERT INTO `teacher_qualification_unit` (`id`, `teacher_qualification_specialization_id`, `code`, `unit`) VALUES
+(1, 5, '', 'Structure of Language'),
+(2, 5, '', 'Concepts in Applied Linguistics'),
+(3, 6, '', 'Research Methods'),
+(4, 6, '', 'Teaching Languages in a Global Context'),
+(5, 7, '', 'Structure of Language'),
+(6, 7, '', 'Concepts in Applied Linguistics'),
+(7, 8, '', 'Research Methods'),
+(8, 8, '', 'Teaching Languages in a Global Context'),
+(9, 9, '', 'Structure of Language'),
+(10, 9, '', 'Concepts in Applied Linguistics'),
+(11, 10, '', 'Research Methods'),
+(12, 10, '', 'Teaching Languages in a Global Context'),
+(13, 11, '', 'Structure of Language'),
+(14, 11, '', 'Concepts in Applied Linguistics'),
+(15, 12, '', 'Structure of Language'),
+(16, 12, '', 'Concepts in Applied Linguistics'),
+(17, 13, '', 'Research Methods'),
+(18, 13, '', 'Teaching Languages in a Global Context'),
+(19, 14, '', 'Structure of Language'),
+(20, 14, '', 'Concepts in Applied Linguistics'),
+(21, 15, '', 'Research Methods'),
+(22, 15, '', 'Teaching Languages in a Global Context'),
+(23, 16, '', 'Name'),
+(24, 16, '', 'Name'),
+(25, 17, '', 'Name'),
+(26, 17, '', 'Name'),
+(27, 18, '', 'Name'),
+(28, 18, '', 'Name'),
+(29, 19, '', 'name'),
+(30, 20, '090990', 'Structure of Language'),
+(31, 20, 'ac888', 'Concepts in Applied Linguistics'),
+(32, 21, '89898', 'Research Methods'),
+(33, 21, '22342', 'Teaching Languages in a Global Context');
 
 -- --------------------------------------------------------
 
@@ -230,21 +276,22 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id`, `email`, `password`) VALUES
-(1, 'upal@gmail.com', 'hello'),
+(1, 'upal@gmail.com', 'helloo'),
 (2, 'asif@gmail.com', 'hello'),
 (4, 'test@gmail.com', 'test'),
 (5, 'upal2@gmail.com', 'hello'),
 (6, 'upal23@gmail.com', 'hello'),
 (7, 'upal24@gmail.com', 'hello'),
 (8, 'upal27@gmail.com', '$2b$10$L4C8XU0rCXvplgbMK2n60eNly6t4LJ9CXJqv4IG3FZKBCchdYa8au'),
-(9, 'upal27@gmail.com', 'hello');
+(9, 'upal27@gmail.com', 'hello'),
+(10, 'he@gmail.com', 'ssssss');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
