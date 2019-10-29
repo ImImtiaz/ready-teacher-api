@@ -49,73 +49,12 @@ conn.connect((err) => {
   console.log('Mysql Connected...');
 });
 
-// app.get('/', (req, res) => {
-//   res.send('Hello world');
-// });
-
-//show all users
-//app.get('/api/users',(req, res) => {
-//  let sql = "SELECT * FROM cxp_persons";
-//  let query = conn.query(sql, (err, results) => {
-//    if(err) throw err;
-//    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-//  });
-//});
-
-//show single user
-//app.get('/api/users/:id',(req, res) => {
-//  let sql = "SELECT * FROM cxp_persons WHERE PersonID="+req.params.id;
-//  let query = conn.query(sql, (err, results) => {
-//    if(err) throw err;
-//    res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-//  });
-//});
-
-//add new user
-// app.post('/api/users',(req, res) => {
-//   let data = {product_name: req.body.product_name, product_price: req.body.product_price};
-//   let sql = "INSERT INTO product SET ?";
-//   let query = conn.query(sql, data,(err, results) => {
-//     if(err) throw err;
-//     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-//   });
-// });
-
-//update user
-// app.put('/api/users/:id',(req, res) => {
-//   let sql = "UPDATE product SET product_name='"+req.body.product_name+"', product_price='"+req.body.product_price+"' WHERE product_id="+req.params.id;
-//   let query = conn.query(sql, (err, results) => {
-//     if(err) throw err;
-//     res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-//   });
-// });
-
-//Delete user
-//app.delete('/api/users/:id',(req, res) => {
-//  let sql = "DELETE FROM cxp_persons WHERE PersonID="+req.params.id+"";
-//  let query = conn.query(sql, (err, results) => {
-//    if(err) throw err;
-//      res.send(JSON.stringify({"status": 200, "error": null, "response": results}));
-//  });
-//});
 
 app.get('/', (req, res) => {
   res.send("Welcome to api");
 });
 
-//show all teacher details
-//app.get('/api/getTeacherDetails', (req, res) => {
-//  let sql = "SELECT * FROM teacher_details";
-//  conn.query(sql, (err, result) => {
-//    if (err)
-//      return res.send(err);
-//    else {
-//      return res.json({
-//        data: result
-//      })
-//    }
-//  });
-//});
+
 
 app.get('/api/getTeacherDetails', verifyToken, (req, res) => {
   jwt.verify(req.token, 'secretkey', (err, authData) => {
@@ -284,7 +223,7 @@ app.get('/api/getTeacherQualificationsByUserID/:userId', verifyToken, (req, res)
     if (err) {
       res.sendStatus(403);
     } else {
-      let sql = "SELECT * FROM teacher_qualification tq INNER JOIN teacher_qualification_cv tqCV on tqCV.id = tq.teacher_qualification_cv_id WHERE teacher_details_id=" + req.params.userId;
+      let sql = "SELECT tq.id, tq.teacher_details_id, tq.teacher_qualification_cv_id, tq.experience_year, tq.experience_month, tqCV.file_name, tqCV.file_path  FROM teacher_qualification tq INNER JOIN teacher_qualification_cv tqCV on tqCV.id = tq.teacher_qualification_cv_id WHERE teacher_details_id=" + req.params.userId;
       let query = conn.query(sql, (err, result) => {
         if (err) throw err;
         else {
